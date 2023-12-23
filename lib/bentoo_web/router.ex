@@ -67,6 +67,13 @@ defmodule BentooWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{BentooWeb.UserAuth, :ensure_authenticated}] do
+      live "/products", ProductLive.Index, :index
+      live "/products/new", ProductLive.Index, :new
+      live "/products/:id/edit", ProductLive.Index, :edit
+
+      live "/products/:id", ProductLive.Show, :show
+      live "/products/:id/show/edit", ProductLive.Show, :edit
+
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
