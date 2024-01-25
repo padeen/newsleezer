@@ -22,6 +22,7 @@ defmodule BentooWeb.Router do
 
     get "/", PageController, :home
     live "/adder", ItemAdder
+    live "/seeker", SeekerLive
   end
 
   # Other scopes may use custom stacks.
