@@ -1,9 +1,11 @@
+require Logger
+
 defmodule Bentoo.PageContent do
-  def get_content(url) do
+  def get_content(url, html_tags) do
     with {:ok, uri} <- URI.new(url),
          {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(uri),
          {:ok, document} <- Floki.parse_document(body) do
-      get_text(document)
+      get_text(document, html_tags)
     else
       error -> error
     end
@@ -14,14 +16,30 @@ defmodule Bentoo.PageContent do
 
     case Enum.member?(~w[section article aside], tag) do
       true -> {tag, Floki.attribute(node, "class")}
-      false -> {tag, Floki.text(node)}
+      false -> {tag, Floki.text(node, deep: false)}
     end
   end
 
-  def get_text(document) do
+  def get_text(document, html_tags) do
     document
-    |> Floki.find("section, section h2")
+    |> Floki.find(html_tags_to_string(html_tags))
     |> Enum.map(&get_content_from_node/1)
     |> Enum.uniq()
+  end
+
+  def html_tags_to_string(%{
+        block_elements: block_elements,
+        single_elements: single_elements
+      }) do
+    combined_html_tags =
+      Enum.reduce(block_elements, block_elements, fn block_element, acc ->
+        Enum.reduce(single_elements, acc, fn single_element, acc ->
+          MapSet.put(acc, "#{block_element} #{single_element}")
+        end)
+      end)
+
+    combined_html_tags
+    |> MapSet.to_list()
+    |> Enum.join(", ")
   end
 end
