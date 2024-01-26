@@ -86,25 +86,31 @@ defmodule BentooWeb.SeekerLive do
   end
 
   def block_element?(tag) do
-    Enum.member?(~w[section aside article], tag)
+    Enum.member?(~w[header main nav footer section aside article], tag)
   end
 
   def assign_form(socket, changeset) do
     assign(socket, :form, to_form(changeset))
   end
 
-  def html_tags_to_string(%{
+  def build_query_string(%{
         block_elements: block_elements,
         single_elements: single_elements
       }) do
-    combined_html_tags =
-      Enum.reduce(block_elements, block_elements, fn block_element, acc ->
-        Enum.reduce(single_elements, acc, fn single_element, acc ->
-          MapSet.put(acc, "#{block_element} #{single_element}")
-        end)
-      end)
+    html_tags =
+      case MapSet.size(block_elements) == 0 do
+        true ->
+          single_elements
 
-    combined_html_tags
+        false ->
+          Enum.reduce(block_elements, block_elements, fn block_element, acc ->
+            Enum.reduce(single_elements, acc, fn single_element, acc ->
+              MapSet.put(acc, "#{block_element} #{single_element}")
+            end)
+          end)
+      end
+
+    html_tags
     |> MapSet.to_list()
     |> Enum.join(", ")
   end

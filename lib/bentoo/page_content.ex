@@ -14,7 +14,7 @@ defmodule Bentoo.PageContent do
   def get_content_from_node(node) do
     tag = elem(node, 0)
 
-    case Enum.member?(~w[section article aside], tag) do
+    case Enum.member?(~w[header main nav footer section article aside], tag) do
       true -> {tag, Floki.attribute(node, "class")}
       false -> {tag, Floki.text(node, deep: false)}
     end
@@ -22,23 +22,29 @@ defmodule Bentoo.PageContent do
 
   def get_text(document, html_tags) do
     document
-    |> Floki.find(html_tags_to_string(html_tags))
+    |> Floki.find(build_query_string(html_tags))
     |> Enum.map(&get_content_from_node/1)
     |> Enum.uniq()
   end
 
-  def html_tags_to_string(%{
+  def build_query_string(%{
         block_elements: block_elements,
         single_elements: single_elements
       }) do
-    combined_html_tags =
-      Enum.reduce(block_elements, block_elements, fn block_element, acc ->
-        Enum.reduce(single_elements, acc, fn single_element, acc ->
-          MapSet.put(acc, "#{block_element} #{single_element}")
-        end)
-      end)
+    html_tags =
+      case MapSet.size(block_elements) == 0 do
+        true ->
+          single_elements
 
-    combined_html_tags
+        false ->
+          Enum.reduce(block_elements, block_elements, fn block_element, acc ->
+            Enum.reduce(single_elements, acc, fn single_element, acc ->
+              MapSet.put(acc, "#{block_element} #{single_element}")
+            end)
+          end)
+      end
+
+    html_tags
     |> MapSet.to_list()
     |> Enum.join(", ")
   end

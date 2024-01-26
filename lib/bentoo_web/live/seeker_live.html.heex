@@ -1,5 +1,17 @@
 <.header>
-  <%= for html_tag <- ~w[section aside article h1 h2 h3 p a] do %>
+  <p>Block selectors</p>
+  <%= for html_tag <- ~w[header main nav footer section aside article] do %>
+    <.link
+      class="bg-blue-500 hover:bg-blue-700
+text-white font-bold py-2 px-4 border border-blue-700 rounded m-1"
+      phx-click="update_html_tags"
+      phx-value-html_tag={html_tag}
+    >
+      <%= html_tag %>
+    </.link>
+  <% end %>
+  <p>Single element selectors</p>
+  <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a pre span] do %>
     <.link
       class="bg-blue-500 hover:bg-blue-700
 text-white font-bold py-2 px-4 border border-blue-700 rounded m-1"
@@ -13,7 +25,14 @@ text-white font-bold py-2 px-4 border border-blue-700 rounded m-1"
   <p>https://schaken.nl</p>
   <p>https://www.economist.com/</p>
   <p>https://nos.nl</p>
-  <p><%= html_tags_to_string(@html_tags) %></p>
+  <p>
+    Raw query string:
+    <%= if build_query_string(@html_tags) == "" do %>
+      empty!
+    <% else %>
+      <%= build_query_string(@html_tags) %>
+    <% end %>
+  </p>
   <.simple_form for={@form} phx-change="validate" phx-submit="save">
     <.input field={@form[:url]} type="text" label="Type website url" phx-debounce="blur" />
     <:actions>
