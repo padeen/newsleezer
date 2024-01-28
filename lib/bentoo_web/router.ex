@@ -20,9 +20,7 @@ defmodule BentooWeb.Router do
   scope "/", BentooWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-    live "/adder", ItemAdder
-    live "/seeker", SeekerLive
+    live "/", SeekerLive
   end
 
   # Other scopes may use custom stacks.

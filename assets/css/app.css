@@ -2,4 +2,37 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+@layer base {
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    @apply text-4xl font-bold text-purple-400 md:text-5xl;
+  }
+
+
+  h2 {
+    font-family: 'Montserrat', sans-serif;
+    @apply text-4xl font-bold text-purple-400 md:text-5xl;
+  }
+
+  h3 {
+    font-family: 'Montserrat', sans-serif;
+    @apply text-3xl font-bold text-blue-400;
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  li {
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  #projects > ul {
+    @apply pl-2 mt-3 ml-1 list-['-_'];
+  }
+
+  a {
+    font-family: 'Montserrat', sans-serif;
+    @apply font-bold hover:underline text-blue-500 visited:text-blue-500;
+  }
+}
