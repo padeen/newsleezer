@@ -1,5 +1,16 @@
 <.header>
-  <p>Block selectors</p>
+  <div>
+    <p>Block selectors</p>
+    <%= for html_tag <- ~w[header main nav footer section aside article] do %>
+      <.button
+        class="py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500"
+        phx-click="update_html_tags"
+        phx-value-html_tag={html_tag}
+      >
+        <%= html_tag %>
+      </.button>
+    <% end %>
+  </div>
   <%= for html_tag <- ~w[header main nav footer section aside article] do %>
     <.link
       class="bg-purple-500 hover:bg-purple-700
@@ -10,8 +21,19 @@ text-white font-bold py-2 px-4 border border-purple-700 rounded m-1"
       <%= html_tag %>
     </.link>
   <% end %>
-  <p>Single element selectors</p>
-  <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a pre span] do %>
+  <div>
+    <p>Single element selectors</p>
+    <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a] do %>
+      <.button
+        class="py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500"
+        phx-click="update_html_tags"
+        phx-value-html_tag={html_tag}
+      >
+        <%= html_tag %>
+      </.button>
+    <% end %>
+  </div>
+  <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a] do %>
     <.link
       class="bg-purple-500 hover:bg-purple-700
 text-white font-bold py-2 px-4 border border-purple-700 rounded m-1"
@@ -42,9 +64,24 @@ text-white font-bold py-2 px-4 border border-purple-700 rounded m-1"
 </.header>
 
 <%= for content <- @content do %>
-  <%= if Enum.member?(~w[section aside article], elem(content, 0)) do %>
-    <p><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></p>
-  <% else %>
-    <p><%= elem(content, 1) %></p>
+  <%= case elem(content, 0) do %>
+    <% "section" -> %>
+      <p><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></p>
+    <% "aside" -> %>
+      <p><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></p>
+    <% "article" -> %>
+      <p><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></p>
+    <% "h1" -> %>
+      <h1><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></h1>
+    <% "h2" -> %>
+      <h2><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></h2>
+    <% "h3" -> %>
+      <h3><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></h3>
+    <% "p" -> %>
+      <p><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></p>
+    <% "a" -> %>
+      <a><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></a>
+    <% _ -> %>
+      <p class="text-red-500"><%= "#{elem(content, 0)} - #{elem(content, 1)}" %></p>
   <% end %>
 <% end %>
