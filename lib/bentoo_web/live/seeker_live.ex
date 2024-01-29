@@ -4,7 +4,6 @@ defmodule BentooWeb.SeekerLive do
   alias Bentoo.Seeker.URL
 
   use BentooWeb, :live_view
-  require Logger
 
   @html_tags %{
     block_elements_all: MapSet.new(~w[header main nav footer section aside article]),
@@ -19,7 +18,7 @@ defmodule BentooWeb.SeekerLive do
     {:ok,
      socket
      |> assign(
-       content: PageContent.get_content(@default_url, @html_tags),
+       content: [],
        search_url: @default_url,
        html_tags: @html_tags
      )
@@ -60,29 +59,31 @@ defmodule BentooWeb.SeekerLive do
     {:noreply,
      socket
      |> assign(content: PageContent.get_content(url_params["url"], html_tags))
-     |> assign_url()
-     |> clear_form()}
-  end
-
-  def handle_event("update-search-url", %{"search-url" => search_url}, socket) do
-    {:noreply, assign(socket, search_url: search_url)}
+     |> assign_url()}
   end
 
   def handle_event("block-elements-select-all", _params, socket) do
     block_elements_all = socket.assigns.html_tags.block_elements_all
+    block_elements_selected = socket.assigns.html_tags.block_elements_selected
 
-    updated_html_tags = %{socket.assigns.html_tags | block_elements_selected: block_elements_all}
+    updated_html_tags =
+      case MapSet.equal?(block_elements_all, block_elements_selected) do
+        true -> %{socket.assigns.html_tags | block_elements_selected: MapSet.new()}
+        false -> %{socket.assigns.html_tags | block_elements_selected: block_elements_all}
+      end
 
     {:noreply, assign(socket, html_tags: updated_html_tags)}
   end
 
   def handle_event("single-elements-select-all", _params, socket) do
     single_elements_all = socket.assigns.html_tags.single_elements_all
+    single_elements_selected = socket.assigns.html_tags.single_elements_selected
 
-    updated_html_tags = %{
-      socket.assigns.html_tags
-      | single_elements_selected: single_elements_all
-    }
+    updated_html_tags =
+      case MapSet.equal?(single_elements_all, single_elements_selected) do
+        true -> %{socket.assigns.html_tags | single_elements_selected: MapSet.new()}
+        false -> %{socket.assigns.html_tags | single_elements_selected: single_elements_all}
+      end
 
     {:noreply, assign(socket, html_tags: updated_html_tags)}
   end
@@ -125,8 +126,8 @@ defmodule BentooWeb.SeekerLive do
         html_tag
       ) do
     case Enum.member?(block_elements, html_tag) do
-      true -> "bg-purple-900"
-      false -> "bg-purple-500"
+      true -> "bg-purple-900 hover:bg-purple-900 hover:brightness-75"
+      false -> "bg-purple-500 hover:bg-purple-500 hover:brightness-75"
     end
   end
 
@@ -136,8 +137,8 @@ defmodule BentooWeb.SeekerLive do
         html_tag
       ) do
     case Enum.member?(single_elements, html_tag) do
-      true -> "bg-purple-900"
-      false -> "bg-purple-500"
+      true -> "bg-purple-900 hover:bg-purple-900 hover:brightness-75"
+      false -> "bg-purple-500 hover:bg-purple-500 hover:brightness-75"
     end
   end
 
@@ -148,8 +149,8 @@ defmodule BentooWeb.SeekerLive do
         } = _html_tags
       ) do
     case MapSet.equal?(block_elements_selected, block_elements_all) do
-      true -> "bg-purple-900"
-      false -> "bg-purple-500"
+      true -> "bg-purple-900 hover:bg-purple-900 hover:brightness-75"
+      false -> "bg-purple-500 hover:bg-purple-500 hover:brightness-75"
     end
   end
 
@@ -160,8 +161,8 @@ defmodule BentooWeb.SeekerLive do
         } = _html_tags
       ) do
     case MapSet.equal?(single_elements_selected, single_elements_all) do
-      true -> "bg-purple-900"
-      false -> "bg-purple-500"
+      true -> "bg-purple-900 hover:bg-purple-900 hover:brightness-75"
+      false -> "bg-purple-500 hover:bg-purple-500 hover:brightness-75"
     end
   end
 

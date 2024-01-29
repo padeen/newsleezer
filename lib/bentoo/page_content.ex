@@ -1,5 +1,3 @@
-require Logger
-
 defmodule Bentoo.PageContent do
   def get_content(url, html_tags) do
     with {:ok, uri} <- URI.new(url),
