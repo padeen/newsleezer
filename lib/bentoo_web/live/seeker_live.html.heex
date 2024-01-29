@@ -1,6 +1,6 @@
 <.header>
-  <div class="flex flex-col text-sm font-bold space-y-3">
-    <p>Block elements</p>
+  <div class="flex flex-col font-bold space-y-3">
+    <p class="text-xl">Select some block elements</p>
     <div>
       <.button
         class={"#{block_elements_selected_all?(@html_tags)} py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500 hover:bg-purple-900"}
@@ -18,7 +18,7 @@
         </.button>
       <% end %>
     </div>
-    <p class="text-sm">Single elements</p>
+    <p class="text-xl">Select some single elements</p>
     <div>
       <.button
         class="py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500 hover:bg-purple-900"
@@ -46,13 +46,25 @@
     </p>
   </div>
   <div class="mt-6 leading-6 font-bold">
-    <p>Example:</p>
-    <p>https://schaken.nl</p>
-    <p>https://www.economist.com/</p>
-    <p>https://nos.nl</p>
+    <p class="text-xl mb-1.5">Click on example link or try your own:</p>
+    <p phx-click="update-search-url" phx-value-search-url="https://schaken.nl">
+      https://schaken.nl
+    </p>
+    <p phx-click="update-search-url" phx-value-search-url="https://www.economist.com">
+      https://www.economist.com
+    </p>
+    <p phx-click="update-search-url" phx-value-search-url="https://nos.nl">
+      https://nos.nl
+    </p>
   </div>
   <.simple_form for={@form} phx-change="validate" phx-submit="save">
-    <.input field={@form[:url]} type="text" label="Type website url" phx-debounce="blur" />
+    <.input
+      field={@form[:url]}
+      type="text"
+      label="Type website url"
+      value={@search_url}
+      phx-debounce="blur"
+    />
     <:actions>
       <.button>Show website</.button>
     </:actions>

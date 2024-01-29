@@ -13,11 +13,14 @@ defmodule BentooWeb.SeekerLive do
     single_elements_selected: MapSet.new(["h2"])
   }
 
+  @default_url "https://nos.nl"
+
   def mount(_params, _session, socket) do
     {:ok,
      socket
      |> assign(
-       content: PageContent.get_content("https://nos.nl/", @html_tags),
+       content: PageContent.get_content(@default_url, @html_tags),
+       search_url: @default_url,
        html_tags: @html_tags
      )
      |> assign_url()
@@ -59,6 +62,10 @@ defmodule BentooWeb.SeekerLive do
      |> assign(content: PageContent.get_content(url_params["url"], html_tags))
      |> assign_url()
      |> clear_form()}
+  end
+
+  def handle_event("update-search-url", %{"search-url" => search_url}, socket) do
+    {:noreply, assign(socket, search_url: search_url)}
   end
 
   def handle_event("block-elements-select-all", _params, socket) do
