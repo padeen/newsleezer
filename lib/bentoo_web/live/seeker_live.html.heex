@@ -1,52 +1,29 @@
 <.header>
   <div>
-    <p>Block selectors</p>
+    <p>Block elements</p>
     <%= for html_tag <- ~w[header main nav footer section aside article] do %>
       <.button
-        class="py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500"
-        phx-click="update_html_tags"
+        class={"#{tag_selected?(:block_element, @html_tags, html_tag)} py-1 px-5 rounded-sm m-1 text-lg font-light hover:bg-purple-900"}
+        phx-click="update_block_elements"
         phx-value-html_tag={html_tag}
       >
         <%= html_tag %>
       </.button>
     <% end %>
   </div>
-  <%= for html_tag <- ~w[header main nav footer section aside article] do %>
-    <.link
-      class="bg-purple-500 hover:bg-purple-700
-text-white font-bold py-2 px-4 border border-purple-700 rounded m-1"
-      phx-click="update_html_tags"
-      phx-value-html_tag={html_tag}
-    >
-      <%= html_tag %>
-    </.link>
-  <% end %>
   <div>
-    <p>Single element selectors</p>
+    <p>Single elements</p>
     <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a] do %>
       <.button
-        class="py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500"
-        phx-click="update_html_tags"
+        class={"#{tag_selected?(:single_element, @html_tags, html_tag)} py-1 px-5 rounded-sm m-1 text-lg font-light hover:bg-purple-900"}
+        phx-click="update_single_elements"
         phx-value-html_tag={html_tag}
       >
         <%= html_tag %>
       </.button>
     <% end %>
   </div>
-  <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a] do %>
-    <.link
-      class="bg-purple-500 hover:bg-purple-700
-text-white font-bold py-2 px-4 border border-purple-700 rounded m-1"
-      phx-click="update_html_tags"
-      phx-value-html_tag={html_tag}
-    >
-      <%= html_tag %>
-    </.link>
-  <% end %>
-  <p>Example websites</p>
-  <p>https://schaken.nl</p>
-  <p>https://www.economist.com/</p>
-  <p>https://nos.nl</p>
+
   <p>
     Raw query string:
     <%= if build_query_string(@html_tags) == "" do %>
@@ -55,6 +32,10 @@ text-white font-bold py-2 px-4 border border-purple-700 rounded m-1"
       <%= build_query_string(@html_tags) %>
     <% end %>
   </p>
+  <p>Example websites</p>
+  <p>https://schaken.nl</p>
+  <p>https://www.economist.com/</p>
+  <p>https://nos.nl</p>
   <.simple_form for={@form} phx-change="validate" phx-submit="save">
     <.input field={@form[:url]} type="text" label="Type website url" phx-debounce="blur" />
     <:actions>

@@ -59,30 +59,28 @@ defmodule BentooWeb.SeekerLive do
      |> clear_form()}
   end
 
-  def handle_event("update_html_tags", %{"html_tag" => tag}, socket) do
+  def handle_event("update_block_elements", %{"html_tag" => tag}, socket) do
     html_tags = socket.assigns.html_tags
 
     updated_html_tags =
-      case block_element?(tag) do
-        true -> update_block_elements(html_tags, tag)
-        false -> update_single_elements(html_tags, tag)
+      case MapSet.member?(html_tags.block_elements, tag) do
+        true -> update_in(html_tags.block_elements, &MapSet.delete(&1, tag))
+        false -> update_in(html_tags.block_elements, &MapSet.put(&1, tag))
       end
 
     {:noreply, assign(socket, html_tags: updated_html_tags)}
   end
 
-  def update_block_elements(html_tags, tag) do
-    case MapSet.member?(html_tags.block_elements, tag) do
-      true -> update_in(html_tags.block_elements, &MapSet.delete(&1, tag))
-      false -> update_in(html_tags.block_elements, &MapSet.put(&1, tag))
-    end
-  end
+  def handle_event("update_single_elements", %{"html_tag" => tag}, socket) do
+    html_tags = socket.assigns.html_tags
 
-  def update_single_elements(html_tags, tag) do
-    case MapSet.member?(html_tags.single_elements, tag) do
-      true -> update_in(html_tags.single_elements, &MapSet.delete(&1, tag))
-      false -> update_in(html_tags.single_elements, &MapSet.put(&1, tag))
-    end
+    updated_html_tags =
+      case MapSet.member?(html_tags.single_elements, tag) do
+        true -> update_in(html_tags.single_elements, &MapSet.delete(&1, tag))
+        false -> update_in(html_tags.single_elements, &MapSet.put(&1, tag))
+      end
+
+    {:noreply, assign(socket, html_tags: updated_html_tags)}
   end
 
   def block_element?(tag) do
@@ -91,6 +89,28 @@ defmodule BentooWeb.SeekerLive do
 
   def assign_form(socket, changeset) do
     assign(socket, :form, to_form(changeset))
+  end
+
+  def tag_selected?(
+        :block_element,
+        %{block_elements: block_elements} = _html_tags,
+        html_tag
+      ) do
+    case Enum.member?(block_elements, html_tag) do
+      true -> "bg-purple-900"
+      false -> "bg-purple-500"
+    end
+  end
+
+  def tag_selected?(
+        :single_element,
+        %{single_elements: single_elements} = _html_tags,
+        html_tag
+      ) do
+    case Enum.member?(single_elements, html_tag) do
+      true -> "bg-purple-900"
+      false -> "bg-purple-500"
+    end
   end
 
   defdelegate build_query_string(html_tags), to: PageContent
