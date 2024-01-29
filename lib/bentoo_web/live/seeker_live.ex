@@ -138,7 +138,7 @@ defmodule BentooWeb.SeekerLive do
         %{
           block_elements_selected: block_elements_selected,
           block_elements_all: block_elements_all
-        } = html_tags
+        } = _html_tags
       ) do
     case MapSet.equal?(block_elements_selected, block_elements_all) do
       true -> "bg-purple-900"
@@ -150,7 +150,7 @@ defmodule BentooWeb.SeekerLive do
         %{
           single_elements_selected: single_elements_selected,
           single_elements_all: single_elements_all
-        } = html_tags
+        } = _html_tags
       ) do
     case MapSet.equal?(single_elements_selected, single_elements_all) do
       true -> "bg-purple-900"
