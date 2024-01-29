@@ -35,8 +35,8 @@ defmodule Bentoo.PageContent do
   end
 
   defp expand_html_tags(%{
-         block_elements: block_elements,
-         single_elements: single_elements
+         block_elements_selected: block_elements,
+         single_elements_selected: single_elements
        }) do
     case MapSet.size(block_elements) == 0 do
       true ->

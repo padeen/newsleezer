@@ -7,8 +7,10 @@ defmodule BentooWeb.SeekerLive do
   require Logger
 
   @html_tags %{
-    block_elements: MapSet.new(["section"]),
-    single_elements: MapSet.new(["h2"])
+    block_elements_all: MapSet.new(~w[header main nav footer section aside article]),
+    block_elements_selected: MapSet.new(["section"]),
+    single_elements_all: MapSet.new(~w[h1 h2 h3 h4 h5 h6 p a]),
+    single_elements_selected: MapSet.new(["h2"])
   }
 
   def mount(_params, _session, socket) do
@@ -59,13 +61,32 @@ defmodule BentooWeb.SeekerLive do
      |> clear_form()}
   end
 
+  def handle_event("block-elements-select-all", _params, socket) do
+    block_elements_all = socket.assigns.html_tags.block_elements_all
+
+    updated_html_tags = %{socket.assigns.html_tags | block_elements_selected: block_elements_all}
+
+    {:noreply, assign(socket, html_tags: updated_html_tags)}
+  end
+
+  def handle_event("single-elements-select-all", _params, socket) do
+    single_elements_all = socket.assigns.html_tags.single_elements_all
+
+    updated_html_tags = %{
+      socket.assigns.html_tags
+      | single_elements_selected: single_elements_all
+    }
+
+    {:noreply, assign(socket, html_tags: updated_html_tags)}
+  end
+
   def handle_event("update_block_elements", %{"html_tag" => tag}, socket) do
     html_tags = socket.assigns.html_tags
 
     updated_html_tags =
-      case MapSet.member?(html_tags.block_elements, tag) do
-        true -> update_in(html_tags.block_elements, &MapSet.delete(&1, tag))
-        false -> update_in(html_tags.block_elements, &MapSet.put(&1, tag))
+      case MapSet.member?(html_tags.block_elements_selected, tag) do
+        true -> update_in(html_tags.block_elements_selected, &MapSet.delete(&1, tag))
+        false -> update_in(html_tags.block_elements_selected, &MapSet.put(&1, tag))
       end
 
     {:noreply, assign(socket, html_tags: updated_html_tags)}
@@ -75,9 +96,9 @@ defmodule BentooWeb.SeekerLive do
     html_tags = socket.assigns.html_tags
 
     updated_html_tags =
-      case MapSet.member?(html_tags.single_elements, tag) do
-        true -> update_in(html_tags.single_elements, &MapSet.delete(&1, tag))
-        false -> update_in(html_tags.single_elements, &MapSet.put(&1, tag))
+      case MapSet.member?(html_tags.single_elements_selected, tag) do
+        true -> update_in(html_tags.single_elements_selected, &MapSet.delete(&1, tag))
+        false -> update_in(html_tags.single_elements_selected, &MapSet.put(&1, tag))
       end
 
     {:noreply, assign(socket, html_tags: updated_html_tags)}
@@ -93,7 +114,7 @@ defmodule BentooWeb.SeekerLive do
 
   def tag_selected?(
         :block_element,
-        %{block_elements: block_elements} = _html_tags,
+        %{block_elements_selected: block_elements} = _html_tags,
         html_tag
       ) do
     case Enum.member?(block_elements, html_tag) do
@@ -104,10 +125,34 @@ defmodule BentooWeb.SeekerLive do
 
   def tag_selected?(
         :single_element,
-        %{single_elements: single_elements} = _html_tags,
+        %{single_elements_selected: single_elements} = _html_tags,
         html_tag
       ) do
     case Enum.member?(single_elements, html_tag) do
+      true -> "bg-purple-900"
+      false -> "bg-purple-500"
+    end
+  end
+
+  def block_elements_selected_all?(
+        %{
+          block_elements_selected: block_elements_selected,
+          block_elements_all: block_elements_all
+        } = html_tags
+      ) do
+    case MapSet.equal?(block_elements_selected, block_elements_all) do
+      true -> "bg-purple-900"
+      false -> "bg-purple-500"
+    end
+  end
+
+  def single_elements_selected_all?(
+        %{
+          single_elements_selected: single_elements_selected,
+          single_elements_all: single_elements_all
+        } = html_tags
+      ) do
+    case MapSet.equal?(single_elements_selected, single_elements_all) do
       true -> "bg-purple-900"
       false -> "bg-purple-500"
     end

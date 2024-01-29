@@ -1,6 +1,12 @@
 <.header>
   <div>
     <p>Block elements</p>
+    <.button
+      class={"#{block_elements_selected_all?(@html_tags)} py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500 hover:bg-purple-900"}
+      phx-click="block-elements-select-all"
+    >
+      select all
+    </.button>
     <%= for html_tag <- ~w[header main nav footer section aside article] do %>
       <.button
         class={"#{tag_selected?(:block_element, @html_tags, html_tag)} py-1 px-5 rounded-sm m-1 text-lg font-light hover:bg-purple-900"}
@@ -13,6 +19,12 @@
   </div>
   <div>
     <p>Single elements</p>
+    <.button
+      class="py-1 px-5 rounded-sm m-1 text-lg font-light bg-purple-500 hover:bg-purple-900"
+      phx-click="single-elements-select-all"
+    >
+      select all
+    </.button>
     <%= for html_tag <- ~w[h1 h2 h3 h4 h5 h6 p a] do %>
       <.button
         class={"#{tag_selected?(:single_element, @html_tags, html_tag)} py-1 px-5 rounded-sm m-1 text-lg font-light hover:bg-purple-900"}
