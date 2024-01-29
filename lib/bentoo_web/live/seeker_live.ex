@@ -9,7 +9,7 @@ defmodule BentooWeb.SeekerLive do
   @html_tags %{
     block_elements_all: MapSet.new(~w[header main nav footer section aside article]),
     block_elements_selected: MapSet.new(["section"]),
-    single_elements_all: MapSet.new(~w[h1 h2 h3 h4 h5 h6 p a]),
+    single_elements_all: MapSet.new(~w[h1 h2 h3 p a]),
     single_elements_selected: MapSet.new(["h2"])
   }
 
