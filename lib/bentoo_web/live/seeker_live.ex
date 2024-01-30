@@ -5,8 +5,6 @@ defmodule BentooWeb.SeekerLive do
 
   use BentooWeb, :live_view
 
-  require Logger
-
   @html_tags %{
     block_elements_all: MapSet.new(~w[header main nav footer section aside article]),
     block_elements_selected: MapSet.new(["section"]),
@@ -128,10 +126,6 @@ defmodule BentooWeb.SeekerLive do
     {:noreply, assign(socket, html_tags: updated_html_tags)}
   end
 
-  def block_element?(tag) do
-    Enum.member?(~w[header main nav footer section aside article], tag)
-  end
-
   def assign_form(socket, changeset) do
     assign(socket, :form, to_form(changeset))
   end
@@ -180,6 +174,14 @@ defmodule BentooWeb.SeekerLive do
       true -> "bg-purple-900 hover:bg-purple-900 hover:brightness-75"
       false -> "bg-purple-500 hover:bg-purple-500 hover:brightness-75"
     end
+  end
+
+  def class_from_node(node) do
+    Floki.attribute(node, "class")
+  end
+
+  def text_from_node(node) do
+    Floki.text(node, deep: false)
   end
 
   defdelegate build_query_string(html_tags), to: PageContent

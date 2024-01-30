@@ -12,17 +12,7 @@ defmodule Bentoo.PageContent do
   def get_text_from_document(document, html_tags) do
     document
     |> Floki.find(build_query_string(html_tags))
-    |> Enum.map(&get_content_from_node/1)
     |> Enum.uniq()
-  end
-
-  def get_content_from_node(node) do
-    tag = elem(node, 0)
-
-    case Enum.member?(~w[header main nav footer section article aside], tag) do
-      true -> {tag, Floki.attribute(node, "class")}
-      false -> {tag, Floki.text(node, deep: false)}
-    end
   end
 
   def build_query_string(html_tags) do
