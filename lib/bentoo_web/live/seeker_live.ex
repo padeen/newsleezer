@@ -5,6 +5,8 @@ defmodule BentooWeb.SeekerLive do
 
   use BentooWeb, :live_view
 
+  require Logger
+
   @html_tags %{
     block_elements_all: MapSet.new(~w[header main nav footer section aside article]),
     block_elements_selected: MapSet.new(["section"]),
@@ -12,14 +14,13 @@ defmodule BentooWeb.SeekerLive do
     single_elements_selected: MapSet.new(["h2"])
   }
 
-  @default_url "https://nos.nl"
-
   def mount(_params, _session, socket) do
     {:ok,
      socket
      |> assign(
        content: [],
-       search_url: @default_url,
+       document: "",
+       search_url: "",
        html_tags: @html_tags
      )
      |> assign_url()
@@ -55,11 +56,26 @@ defmodule BentooWeb.SeekerLive do
 
   def handle_event("save", %{"url" => url_params}, socket) do
     html_tags = socket.assigns.html_tags
+    url = url_params["url"]
 
-    {:noreply,
-     socket
-     |> assign(content: PageContent.get_content(url_params["url"], html_tags))
-     |> assign_url()}
+    case url == socket.assigns.search_url do
+      true ->
+        {:noreply,
+         socket
+         |> assign(
+           content: PageContent.get_text_from_document(socket.assigns.document, html_tags)
+         )
+         |> assign_url()}
+
+      false ->
+        document = PageContent.get_document(url)
+
+        {:noreply,
+         socket
+         |> assign(document: document, search_url: url)
+         |> assign(content: PageContent.get_text_from_document(document, html_tags))
+         |> assign_url()}
+    end
   end
 
   def handle_event("block-elements-select-all", _params, socket) do
