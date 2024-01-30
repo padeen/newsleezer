@@ -184,5 +184,9 @@ defmodule BentooWeb.SeekerLive do
     Floki.text(node, deep: false)
   end
 
+  def tag_from_node(node) do
+    elem(node, 0)
+  end
+
   defdelegate build_query_string(html_tags), to: PageContent
 end

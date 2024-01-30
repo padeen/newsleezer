@@ -66,10 +66,10 @@
 </.header>
 
 <%= for content <- @content do %>
-  <%= case elem(content, 0) do %>
+  <%= case tag_from_node(content) do %>
     <% tag when tag in ~w[section aside article header nav main footer] -> %>
       <p class="text-sm text-red-500">
-        <%= "#{elem(content, 0)} - #{class_from_node(content)}" %>
+        <%= "#{tag_from_node(content)} - #{class_from_node(content)}" %>
       </p>
     <% "h1" -> %>
       <h1 class="text-xl font-bold text-blue-500"><%= "#{text_from_node(content)}" %></h1>
@@ -83,7 +83,7 @@
       <a><%= "#{text_from_node(content)}" %></a>
     <% _ -> %>
       <p class="text-red-500">
-        <%= "#{elem(content, 0)} - #{class_from_node(content)}" %>
+        <%= "#{tag_from_node(content)} - #{class_from_node(content)}" %>
       </p>
   <% end %>
 <% end %>
