@@ -1,18 +1,49 @@
-# Bentoo
+# Project description
 
-To start your Phoenix server:
+Application to view websites in text-only mode
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Mix commands
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Start Phoenix dev server on port 4000. Database service required.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+```
+mix phx.server
+```
 
-## Learn more
+## Docker commands
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+**With Docker and Docker-compose installed you can run these commands**
+
+Start container with Phoenix dev server on port 4000
+
+```
+docker-compose up
+```
+
+Run the database service in the background
+
+```
+docker-compose up -d database
+```
+
+Run commands manually inside throwaway container
+
+```
+docker-compose run --rm -p 4000:4000 elixir bash
+```
+
+## Deployment instructions for Render.com
+
+See build.sh for build steps
+
+**Environment Variables**
+
+Generate secret
+
+```
+mix phx.gen.secret
+```
+
+Add secret to environment variables
+
+SECRET_KEY_BASE: 'generated secret'
