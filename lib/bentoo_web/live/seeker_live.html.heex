@@ -46,15 +46,15 @@
     </p>
   </div>
   <div class="mt-6 leading-6 font-bold">
-    <p class="text-xl mb-1.5">Try out an example or try your own link:</p>
-    <p>
+    <p class="text-xl mb-1.5">Click on example link or try your own:</p>
+    <p phx-click="update-url" phx-value-url="https://www.rijnmond.nl">
       https://www.rijnmond.nl
     </p>
-    <p>
-      https://nos.nl
-    </p>
-    <p>
+    <p phx-click="update-url" phx-value-url="https://www.economist.com">
       https://www.economist.com
+    </p>
+    <p phx-click="update-url" phx-value-url="https://nos.nl">
+      https://nos.nl
     </p>
   </div>
   <.simple_form for={@form} phx-change="validate" phx-submit="save">

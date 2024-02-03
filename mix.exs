@@ -52,7 +52,7 @@ defmodule Bentoo.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:httpoison, "~> 2.2"},
-      {:floki, "~> 0.35.2"},
+      {:floki, "0.35.2"},
       {:html5ever, "~> 0.15.0"}
     ]
   end

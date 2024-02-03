@@ -18,16 +18,10 @@ defmodule BentooWeb.SeekerLive do
      |> assign(
        content: [],
        document: "",
-       search_url: "",
-       html_tags: @html_tags
+       html_tags: @html_tags,
+       url: %URL{url: ""}
      )
-     |> assign_url()
      |> clear_form()}
-  end
-
-  def assign_url(socket) do
-    socket
-    |> assign(:url, %URL{})
   end
 
   def clear_form(socket) do
@@ -56,24 +50,32 @@ defmodule BentooWeb.SeekerLive do
     html_tags = socket.assigns.html_tags
     url = url_params["url"]
 
-    case url == socket.assigns.search_url do
+    case url == socket.assigns.url do
       true ->
         {:noreply,
-         socket
-         |> assign(
+         assign(socket,
            content: PageContent.get_text_from_document(socket.assigns.document, html_tags)
-         )
-         |> assign_url()}
+         )}
 
       false ->
         document = PageContent.get_document(url)
 
         {:noreply,
-         socket
-         |> assign(document: document, search_url: url)
-         |> assign(content: PageContent.get_text_from_document(document, html_tags))
-         |> assign_url()}
+         assign(socket,
+           document: document,
+           content: PageContent.get_text_from_document(document, html_tags),
+           url: url
+         )}
     end
+  end
+
+  def handle_event("update-url", %{"url" => url_params}, socket) do
+    changeset =
+      %URL{}
+      |> Seeker.change_url(%{url: url_params})
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event("block-elements-select-all", _params, socket) do
