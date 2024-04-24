@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  elixir:
+    build: .
+    ports:
+      - "4000:4000"
+    volumes:
+      - ".:/usr/src/app"
+
+  database:
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pento_dev
